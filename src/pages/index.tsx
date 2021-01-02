@@ -2,56 +2,35 @@ import {useState, useCallback} from 'react';
 import { fetchRepos } from 'api'
 import {debounce} from 'lodash';
 import Layout from 'components/Layout';
-
-interface ListObj {
-  name: string,
-  description: string,
-  clone_url: string,
-  stargazers_count: number,
-  watchers_count: number,
-  language: string,
-}
+import InfinitScroll from 'components/InfinitScroll';
+import Search from 'components/Search';
+import {ListItem} from 'types';
 
 const Home = () => {
-  const [list, setList] = useState<ListObj[]>([]);
+  const [list, setList] = useState<ListItem[]>([]);
+  const [userName, setUserName] = useState('')
   const [isFetching, setFetching] = useState(false);
   const [isFetched, setFetched] = useState(false);
 
-  const handleFetchRepos = useCallback(debounce((userName: string) => {
+  const handleFetchRepos = useCallback(debounce((userName: string, pageNumber: number) => {
     setFetched(true)
-    fetchRepos(userName).then(response => response.json()).then(data => {
+    setUserName(userName)
+    fetchRepos({userName, perpage: 10, pageNumber}).then(data => {
       setList(data)
       setFetching(false)
     })
   }, 500), [])
+  const handleFetchReposMore = (pageNumber: number) => {
+    if (userName) {
+      fetchRepos({userName, perpage: 10, pageNumber}).then(data => {
+        setList(data)
+      })
+    }
+  }
   return (
     <Layout>
-      FetchRepos
-      <input
-        onChange={(e) => {
-          setFetching(true)
-          handleFetchRepos(e.target.value)
-        }}
-      />
-      {
-        isFetched && isFetching && (
-          <div>Loading...</div>
-        )
-      }
-      {
-        isFetched && !isFetching && list.length > 0 && list.map((d) => {
-          return (
-            <div>
-              <p>{d.name}</p>
-              <p>{d.description}</p>
-              <p>{d.clone_url}</p>
-              <p>{d.stargazers_count}</p>
-              <p>{d.watchers_count}</p>
-              <p>{d.language}</p>
-            </div>
-          )
-        })
-      }
+      <Search {...{setFetching, handleFetchRepos}}/>
+      <InfinitScroll datas={list} handleFetchDatas={handleFetchReposMore} userName={userName}/>
     </Layout>
   )
 }

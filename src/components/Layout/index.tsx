@@ -1,4 +1,3 @@
-import { Interface } from 'readline';
 import { Container } from './style'
 
 interface LayoutProps {
