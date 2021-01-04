@@ -1,5 +1,4 @@
-
-type fetchReposRequest = {
+export type fetchReposRequest = {
   userName: string,
   pageNumber: number,
   perpage: number,
@@ -10,7 +9,7 @@ export async function fetchRepos({userName, perpage, pageNumber}: fetchReposRequ
     `https://api.github.com/users/${userName}/repos?sort=fullname&per_page=${perpage}&page=${pageNumber}`,
     {
       headers: {
-        'Authorization': '04ab0c1fc3be25abed0fc043237d962278579e04'
+        'Authorization': 'dc9eef111fdc5e39500837fedc1ebd3206dca4e9'
       }
     }
   )
