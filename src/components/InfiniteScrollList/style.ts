@@ -2,11 +2,9 @@ import styled from 'styled-components';
 
 export const Container = styled.div``
 
-export const ItemFrame = styled.div`
-`
+export const ItemFrame = styled.div``
 
 export const Item = styled.div`
-  height: 250px;
   padding: 10px;
   margin-top: 15px;
   border: solid 1px #ddd;
@@ -19,4 +17,5 @@ export const Item = styled.div`
 export const LoadingFrame = styled.div`
   display: flex;
   justify-content: center;
+  margin: 10px
 `

@@ -7,11 +7,12 @@ interface InfiniteScrollProps {
 	datas: ListItem[]
 	handleFetchDatas: (pageNumber: number) => void
 	userName: string
-	isFetched: boolean
 	isFetching: boolean
+	isEmpty: boolean
+	isFetched: boolean
 }
 const InfiniteScrollList = ({
-	datas, handleFetchDatas, userName, isFetched, isFetching
+	datas, handleFetchDatas, userName, isFetching, isEmpty, isFetched
 }: InfiniteScrollProps) => {
 	const [postList, setPostList] = useState<ListItem[]>([]); 
 	const [page, setPage] = useState(1);
@@ -42,27 +43,30 @@ const InfiniteScrollList = ({
 	}, [datas])
 
 	useEffect(() => {
-		handleFetchDatas(page)
+		if (page > 1) {
+			handleFetchDatas(page)
+		}
 	}, [page])
 
 	useEffect(() => {
 		if (userName) {
 			setPostList([])
+			setPage(1)
 		}
 	}, [userName])
 	return (
 		<Container>
 			<ItemFrame>
 				{
-					postList.map((d, index) => {
+					postList.length > 0 && postList.map((d, index) => {
 						return (
 						<Item key={index}>
-							<p>{d.name}</p>
+							<h2>{d.name}</h2>
 							<p>Description: {d.description}</p>
-							<p>Clone URL:{d.clone_url}</p>
-							<p>Star:{d.stargazers_count}</p>
-							<p>Watcher:{d.watchers_count}</p>
-							<p>Language:{d.language}</p>
+							<p>Clone URL: {d.clone_url}</p>
+							<p>Star: {d.stargazers_count}</p>
+							<p>Watcher: {d.watchers_count}</p>
+							<p>Language: {d.language}</p>
 						</Item>
 						)
 					})
@@ -70,11 +74,17 @@ const InfiniteScrollList = ({
 			</ItemFrame>
 			<LoadingFrame ref={loader}>
 				{
-					isFetched && datas.length >= 10 && (
+					isFetching && (datas.length >= 10 || !isFetched) && (
 						<Loading type="bubbles" color="#ccc"/>
 					)
 				}
 			</LoadingFrame>
+			{
+				!isFetching && isEmpty && (<LoadingFrame>－　Data Not Found.　－</LoadingFrame>)
+			}
+			{
+				!isFetching && !isEmpty && isFetched && datas.length === 0 && (<LoadingFrame>－　No More Data.　－</LoadingFrame>)
+			}
 		</Container>
 	)
 }

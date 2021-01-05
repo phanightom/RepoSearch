@@ -6,12 +6,7 @@ export type fetchReposRequest = {
 
 export async function fetchRepos({userName, perpage, pageNumber}: fetchReposRequest) {
   const response = await fetch(
-    `https://api.github.com/users/${userName}/repos?sort=fullname&per_page=${perpage}&page=${pageNumber}`,
-    {
-      headers: {
-        'Authorization': 'dc9eef111fdc5e39500837fedc1ebd3206dca4e9'
-      }
-    }
+    `https://api.github.com/users/${userName}/repos?sort=fullname&per_page=${perpage}&page=${pageNumber}&access_token=82ed7adb47c0928aa24d2ad7e4196a4316225055`,
   )
   return await response.json();
 }

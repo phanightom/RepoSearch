@@ -10,15 +10,29 @@ const Home = () => {
   const [list, setList] = useState<ListItem[]>([]);
   const [userName, setUserName] = useState('')
   const [isFetching, setFetching] = useState(false);
+  const [isEmpty, setIsEmpty] = useState(false);
   const [isFetched, setFetched] = useState(false);
-
+  const onFetchEnd =  () => {
+    setFetching(false)
+    setIsEmpty(false)
+    setFetched(true)
+  }
   const handleFetchRepos = (params: fetchReposRequest) => {
     if (!params.userName) return null
     setFetching(true)
-    fetchRepos(params).then(data => {
-      setList(data)
-      setFetching(false)
-      setFetched(true)
+    fetchRepos(params).then(response => {
+      if (response.message) {
+        onFetchEnd()
+        setIsEmpty(true)
+        setFetched(false)
+        return null
+      } else {
+        setList(response)
+        onFetchEnd()
+      }
+    }).catch(() => {
+      setList([])
+      onFetchEnd()
     })
   }
 
@@ -40,9 +54,7 @@ const Home = () => {
       <InfiniteScrollList
         datas={list}
         handleFetchDatas={handleFetchReposMore}
-        userName={userName}
-        isFetched={isFetched}
-        isFetching={isFetching}
+        {...{userName, isFetching, isEmpty, isFetched}}
       />
     </Layout>
   )
