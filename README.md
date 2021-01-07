@@ -1,4 +1,4 @@
-Search Repos Project
+## Search Repos Project
 
 ### Getting Started
 
